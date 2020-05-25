@@ -2,8 +2,6 @@
 
 import sys
 import traceback
-import numpy as np
-import threading
 import time
 import logging
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -175,11 +173,11 @@ class Food():
         else:
             self.food_coord(game, player)
 
-    def display_food(self, x, y, game):
+    def display_food(self, game):
         for label in game.MainWindow.arrayFood:
             label.move(1000, 1000) #убираем за границы экрана
         game.MainWindow.arrayFood[0].move(self.x_food, self.y_food)
-    
+
 
 def eat(player, food, game):
     if player.x == food.x_food and player.y == food.y_food:
@@ -283,7 +281,7 @@ class Ui_MainWindow(object):
             label.setText("")
             label.setObjectName("label"+str(i))
             self.arraySnakeBody.append(label)
-        
+
         for i in range(10):
             label = QtWidgets.QLabel(self.gameField)
             label.setGeometry(QtCore.QRect(1000, 1000, 20, 20))
@@ -291,13 +289,13 @@ class Ui_MainWindow(object):
             label.setText("")
             label.setObjectName("labelFood"+str(i))
             self.arrayFood.append(label)
-    
+
 
     def display(self, game):
         x = game.player.position[-1][0]
         y = game.player.position[-1][1]
         game.player.display_player(x, y, game.player.food, game)
-        game.food.display_food(game.food.x_food, game.food.y_food, game)
+        game.food.display_food(game)
 
     def setupUi(self, MainWindow):
         MainWindow.setStatusBar(self.statusbar)
@@ -311,7 +309,7 @@ class Ui_MainWindow(object):
         self.goDownButton.setText(_translate("MainWindow", "↓"))
         self.goUpButton.setText(_translate("MainWindow", "↑"))
         self.newGameButton.setText(_translate("MainWindow", "New game"))
-        self.DangerButton.setText(_translate("MainWindow", "Danger"))
+        #self.DangerButton.setText(_translate("MainWindow", "Danger"))
 
 
     def clickedUp(self):
@@ -323,17 +321,17 @@ class Ui_MainWindow(object):
         # self.label.move(self.label.pos().x(), self.label.pos().y() + self.game.stepY)
         self.game.player.x_change = 0
         self.game.player.y_change = self.game.stepY
-        
+
     def clickedLeft(self):
         # self.label.move(self.label.pos().x() - self.game.stepX, self.label.pos().y())
         self.game.player.x_change = -self.game.stepX
         self.game.player.y_change = 0
-        
+
     def clickedRight(self):
         # self.label.move(self.label.pos().x() + self.game.stepX, self.label.pos().y())
         self.game.player.x_change = self.game.stepX
         self.game.player.y_change = 0
-        
+
     def clickedNewGame(self):
         if self.gameMainThread != None:
             self.game.stopFlag = True
